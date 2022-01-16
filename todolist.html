@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            margin:0px;
+            padding:0px;
+        }
+        .main-container{
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            margin-top: 50px;
+        }
+        .main-container .container input{
+            width: 400px;
+            height: 50px;
+            border-radius: 5px;
+            border-style: double;
+            border-color: black;
+        }
+        .main-container .container textarea{
+            width: 400px;
+            height: 200px;
+            border-color: black;
+            border-style: double;
+            border-radius: 5px;
+        }
+        table{
+            width: 100%;
+        }
+        table,th{
+            height: 50px;
+            width: 500px;
+        }
+        table,th{
+            border:1px solid black;
+        }
+        table td{
+            border: 1px dotted black;
+        }
+        .container .addbutton{
+            width:100px;
+            height:50px;
+            color:white;
+            font-size:large;
+            border-style: double;
+            border-radius:2px;
+            border-color: black;
+            background-color: #2596be;
+            cursor: pointer;
+        }
+        .container .clearbutton{
+            width:100px;
+            height:50px;
+            color:black;
+            font-size:large;
+            border-style: double;
+            border-radius:2px;
+            border-color: black;
+            background-color: #f9ce89;
+            cursor: pointer;
+        }
+        .deletebutton{
+            width:100px;
+            height:30px;
+            color:white;
+            font-size:large;
+            border-style: double;
+            border-radius:2px;
+            border-color: black;
+            background-color:#551255;
+            cursor: pointer;
+
+        }
+        .addbutton:hover{
+            background-color:blue;
+        }
+        .clearbutton:hover{
+            background-color: yellow;
+        }
+        .deletebutton:hover{
+            background-color: red;
+        }
+        
+        
+    </style>
+    <title>TodoList</title>
+    
+</head>
+<body>
+    <div class="main-container">
+
+        <div class="container">
+            
+            <h2>Title</h2>
+            <input type="text" placeholder="title of todolist" id="title"><br/>
+            <h2>Description</h2>
+            <Textarea id="description" ></Textarea><br/>
+            <button type="submit" id="add" class="addbutton">Add to List</button>
+            <button  id="clear" class="clearbutton" onclick="clearStorage()">Clear list</button>
+            
+        </div>
+        <div id="items" class="displayingitems">
+            <h3>Displaying todolist</h3><br/>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SNo</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead> 
+            <tbody id="tablebody">
+                <tr>
+                    <td>1</td>
+                    <td>get somecoffe</td>
+                    <td>okay</td>
+                    <td><button class="deletebutton">Delete</button></td>
+                </tr>
+            </tbody>
+            
+        </table>
+        </div>
+    </div>
+        <script>
+        function getUpdate(){
+            tit = document.getElementById("title").value;
+            desc= document.getElementById("description").value;
+            if (localStorage.getItem('itemsJson')==null){
+                    itemJsonArray = [];
+                    itemJsonArray.push([tit, desc]);
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                else{
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+                    itemJsonArray.push([tit, desc]);
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                update();
+
+        }
+        function update(){
+            if (localStorage.getItem('itemsJson')==null){
+                    itemJsonArray = []; 
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                } 
+                else{
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr); 
+                }
+                let tablebody = document.getElementById("tablebody");
+               let str ='';
+               itemJsonArray.forEach((element,index) => {
+                   str += `
+                <tr>
+                <td>${index + 1}</td>
+                <td>${element[0]}</td>
+                <td>${element[1]}</td>
+                <td><button onclick="deleted(${index})" class="deletebutton">Delete</button></td>
+            </tr>
+                   `
+               });
+               tablebody.innerHTML=str;
+
+        }
+        add = document.getElementById("add");
+        add.addEventListener("click",getUpdate);
+        update();
+        
+        function deleted(itemIndex){
+                console.log("Delete", itemIndex);
+                itemJsonArrayStr = localStorage.getItem('itemsJson')
+                itemJsonArray = JSON.parse(itemJsonArrayStr);s
+                itemJsonArray.splice(itemIndex, 1);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                update();
+
+            }
+
+        function clearStorage(){
+            if(confirm("Do you really want to clear?")){
+                console.log('clearing the storage')
+                localStorage.clear();
+                update()
+            }
+        }
+    </script>
+</body>
+</html>
